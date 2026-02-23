@@ -38,29 +38,29 @@ const Index = () => {
       />
 
       {/* Main trading grid */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_260px_260px] gap-[1px] bg-border/30">
-        {/* Left: Chart + Trade History */}
-        <div className="flex flex-col gap-[1px] bg-border/30">
-          <div className="bg-card h-[460px]">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_280px_280px] gap-px bg-border/40">
+        {/* Left column: Chart on top, Trade History below */}
+        <div className="flex flex-col gap-px bg-border/40">
+          <div className="bg-card h-[520px]">
             <PriceChart />
           </div>
-          <div className="bg-card flex-1 min-h-[200px]">
+          <div className="bg-card flex-1 min-h-[180px]">
             <TradeHistory trades={portfolio.trades} />
           </div>
         </div>
 
-        {/* Middle: Order Book + Recent Trades */}
-        <div className="flex flex-col gap-[1px] bg-border/30">
-          <div className="bg-card flex-1">
+        {/* Middle column: Order Book on top, Market Trades below */}
+        <div className="flex flex-col gap-px bg-border/40">
+          <div className="bg-card flex-1 min-h-0">
             <OrderBook />
           </div>
-          <div className="bg-card">
+          <div className="bg-card min-h-[280px]">
             <RecentTrades />
           </div>
         </div>
 
-        {/* Right: Trade Panel + Portfolio */}
-        <div className="flex flex-col gap-[1px] bg-border/30">
+        {/* Right column: Trade Panel on top, Portfolio below */}
+        <div className="flex flex-col gap-px bg-border/40">
           <div className="bg-card">
             <TradePanel
               portfolio={portfolio}
