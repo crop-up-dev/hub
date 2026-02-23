@@ -47,25 +47,25 @@ const TradePanel = ({ portfolio, currentPrice, onTradeExecuted }: TradePanelProp
   };
 
   return (
-    <div className="flex flex-col bg-card rounded-lg border border-border">
-      <div className="px-3 py-2 border-b border-border">
-        <h3 className="text-sm font-semibold text-foreground">Trade</h3>
+    <div className="flex flex-col">
+      <div className="px-3 py-2 border-b border-border/50">
+        <span className="section-header">Trade</span>
       </div>
 
       {/* Buy/Sell tabs */}
-      <div className="grid grid-cols-2 m-3 mb-0 rounded-md overflow-hidden border border-border">
+      <div className="grid grid-cols-2 mx-3 mt-3 rounded-lg overflow-hidden">
         <button
           onClick={() => setSide('buy')}
-          className={`py-2 text-sm font-semibold transition-colors ${
-            side === 'buy' ? 'bg-trading-green text-primary-foreground' : 'bg-card text-muted-foreground hover:bg-accent'
+          className={`py-2.5 text-sm font-semibold transition-all ${
+            side === 'buy' ? 'bg-trading-green text-primary-foreground glow-green' : 'bg-secondary text-muted-foreground hover:bg-accent'
           }`}
         >
           Buy
         </button>
         <button
           onClick={() => setSide('sell')}
-          className={`py-2 text-sm font-semibold transition-colors ${
-            side === 'sell' ? 'bg-trading-red text-primary-foreground' : 'bg-card text-muted-foreground hover:bg-accent'
+          className={`py-2.5 text-sm font-semibold transition-all ${
+            side === 'sell' ? 'bg-trading-red text-primary-foreground glow-red' : 'bg-secondary text-muted-foreground hover:bg-accent'
           }`}
         >
           Sell
@@ -73,12 +73,12 @@ const TradePanel = ({ portfolio, currentPrice, onTradeExecuted }: TradePanelProp
       </div>
 
       {/* Order type */}
-      <div className="flex gap-2 px-3 pt-3">
+      <div className="flex gap-1 px-3 pt-3">
         {(['market', 'limit'] as const).map(t => (
           <button
             key={t}
             onClick={() => setOrderType(t)}
-            className={`px-3 py-1 text-xs rounded font-medium transition-colors ${
+            className={`px-3 py-1 text-[11px] rounded-md font-medium transition-all ${
               orderType === t ? 'bg-accent text-foreground' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -99,17 +99,17 @@ const TradePanel = ({ portfolio, currentPrice, onTradeExecuted }: TradePanelProp
         {/* Price input */}
         {orderType === 'limit' ? (
           <div>
-            <label className="text-[10px] text-muted-foreground mb-1 block">Price (USDT)</label>
+            <label className="text-[10px] text-muted-foreground mb-1 block uppercase tracking-wider">Price (USDT)</label>
             <Input
               type="number"
               placeholder="Limit price"
               value={price}
               onChange={e => setPrice(e.target.value)}
-              className="font-mono bg-secondary border-border h-9 text-sm"
+              className="font-mono bg-secondary/50 border-border/50 h-9 text-sm"
             />
           </div>
         ) : (
-          <div className="flex justify-between text-xs py-1">
+          <div className="flex justify-between text-xs py-1.5 px-2.5 rounded-md bg-secondary/30">
             <span className="text-muted-foreground">Market Price</span>
             <span className="font-mono text-foreground">{formatUSD(currentPrice)}</span>
           </div>
@@ -117,13 +117,13 @@ const TradePanel = ({ portfolio, currentPrice, onTradeExecuted }: TradePanelProp
 
         {/* Amount input */}
         <div>
-          <label className="text-[10px] text-muted-foreground mb-1 block">Amount (BTC)</label>
+          <label className="text-[10px] text-muted-foreground mb-1 block uppercase tracking-wider">Amount (BTC)</label>
           <Input
             type="number"
             placeholder="0.000000"
             value={amount}
             onChange={e => setAmount(e.target.value)}
-            className="font-mono bg-secondary border-border h-9 text-sm"
+            className="font-mono bg-secondary/50 border-border/50 h-9 text-sm"
           />
         </div>
 
@@ -133,7 +133,7 @@ const TradePanel = ({ portfolio, currentPrice, onTradeExecuted }: TradePanelProp
             <button
               key={pct}
               onClick={() => handlePercentage(pct)}
-              className="py-1 text-[10px] font-medium rounded bg-secondary text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+              className="py-1.5 text-[10px] font-medium rounded-md bg-secondary/50 text-muted-foreground hover:text-foreground hover:bg-accent transition-all"
             >
               {pct * 100}%
             </button>
@@ -141,16 +141,16 @@ const TradePanel = ({ portfolio, currentPrice, onTradeExecuted }: TradePanelProp
         </div>
 
         {/* Total */}
-        <div className="flex justify-between text-xs pt-1 border-t border-border">
+        <div className="flex justify-between text-xs pt-2 border-t border-border/30">
           <span className="text-muted-foreground">Total</span>
-          <span className="font-mono text-foreground">{formatUSD(total)}</span>
+          <span className="font-mono text-foreground font-medium">{formatUSD(total)}</span>
         </div>
 
         {/* Submit */}
         <Button
           onClick={handleSubmit}
-          className={`w-full font-semibold ${
-            side === 'buy' ? 'bg-trading-green hover:bg-trading-green/90' : 'bg-trading-red hover:bg-trading-red/90'
+          className={`w-full font-semibold h-10 text-sm ${
+            side === 'buy' ? 'bg-trading-green hover:bg-trading-green/90 glow-green' : 'bg-trading-red hover:bg-trading-red/90 glow-red'
           } text-primary-foreground`}
         >
           {side === 'buy' ? 'Buy' : 'Sell'} BTC
