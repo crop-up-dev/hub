@@ -24,26 +24,26 @@ const PriceChart = () => {
 
     const chart = createChart(chartContainerRef.current, {
       layout: {
-        background: { type: ColorType.Solid, color: 'hsl(220, 18%, 10%)' },
-        textColor: 'hsl(215, 15%, 55%)',
-        fontFamily: 'Inter, sans-serif',
+        background: { type: ColorType.Solid, color: 'transparent' },
+        textColor: 'hsl(218, 15%, 48%)',
+        fontFamily: "'Space Grotesk', sans-serif",
         fontSize: 11,
       },
       grid: {
-        vertLines: { color: 'hsl(220, 14%, 15%)' },
-        horzLines: { color: 'hsl(220, 14%, 15%)' },
+        vertLines: { color: 'hsl(225, 14%, 10%)' },
+        horzLines: { color: 'hsl(225, 14%, 10%)' },
       },
       crosshair: {
         mode: 0,
-        vertLine: { color: 'hsl(45, 100%, 51%)', width: 1, style: 2 },
-        horzLine: { color: 'hsl(45, 100%, 51%)', width: 1, style: 2 },
+        vertLine: { color: 'hsl(47, 100%, 50%)', width: 1, style: 2, labelBackgroundColor: 'hsl(47, 100%, 50%)' },
+        horzLine: { color: 'hsl(47, 100%, 50%)', width: 1, style: 2, labelBackgroundColor: 'hsl(47, 100%, 50%)' },
       },
       rightPriceScale: {
-        borderColor: 'hsl(220, 14%, 18%)',
+        borderColor: 'hsl(225, 14%, 14%)',
         scaleMargins: { top: 0.1, bottom: 0.25 },
       },
       timeScale: {
-        borderColor: 'hsl(220, 14%, 18%)',
+        borderColor: 'hsl(225, 14%, 14%)',
         timeVisible: true,
         secondsVisible: false,
       },
@@ -52,12 +52,12 @@ const PriceChart = () => {
     chartRef.current = chart;
 
     const candleSeries = chart.addSeries(CandlestickSeries, {
-      upColor: 'hsl(145, 63%, 49%)',
-      downColor: 'hsl(0, 72%, 51%)',
-      borderDownColor: 'hsl(0, 72%, 51%)',
-      borderUpColor: 'hsl(145, 63%, 49%)',
-      wickDownColor: 'hsl(0, 72%, 51%)',
-      wickUpColor: 'hsl(145, 63%, 49%)',
+      upColor: 'hsl(152, 69%, 46%)',
+      downColor: 'hsl(354, 70%, 54%)',
+      borderDownColor: 'hsl(354, 70%, 54%)',
+      borderUpColor: 'hsl(152, 69%, 46%)',
+      wickDownColor: 'hsl(354, 70%, 54%)',
+      wickUpColor: 'hsl(152, 69%, 46%)',
     });
     candleSeriesRef.current = candleSeries;
 
@@ -92,23 +92,23 @@ const PriceChart = () => {
       klines.map(k => ({
         time: k.time,
         value: k.volume,
-        color: k.close >= k.open ? 'hsla(145, 63%, 49%, 0.3)' : 'hsla(0, 72%, 51%, 0.3)',
+        color: k.close >= k.open ? 'hsla(152, 69%, 46%, 0.2)' : 'hsla(354, 70%, 54%, 0.2)',
       }))
     );
   }, [klines]);
 
   return (
-    <div className="flex flex-col h-full bg-card rounded-lg border border-border">
-      <div className="flex items-center gap-1 px-3 py-2 border-b border-border">
-        <span className="text-xs text-muted-foreground mr-2">Interval:</span>
+    <div className="flex flex-col h-full">
+      <div className="flex items-center gap-1 px-3 py-2 border-b border-border/50">
+        <span className="section-header mr-3">Chart</span>
         {INTERVALS.map(i => (
           <button
             key={i.value}
             onClick={() => setInterval(i.value)}
-            className={`px-2.5 py-1 text-xs rounded font-medium transition-colors ${
+            className={`px-2.5 py-1 text-[11px] rounded-md font-medium transition-all ${
               interval === i.value
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                ? 'bg-primary/15 text-primary glow-primary'
+                : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
             }`}
           >
             {i.label}

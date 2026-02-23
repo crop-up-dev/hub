@@ -21,17 +21,17 @@ const PortfolioSummary = ({ portfolio, currentPrice }: PortfolioSummaryProps) =>
     { name: 'BTC', value: btcValue },
   ].filter(d => d.value > 0);
 
-  const COLORS = ['hsl(45, 100%, 51%)', 'hsl(25, 95%, 53%)'];
+  const COLORS = ['hsl(47, 100%, 50%)', 'hsl(25, 95%, 53%)'];
 
   return (
-    <div className="bg-card rounded-lg border border-border p-4 space-y-4">
-      <h3 className="text-sm font-semibold text-foreground">Portfolio</h3>
+    <div className="p-4 space-y-4">
+      <span className="section-header">Portfolio</span>
 
-      <div className="flex items-center gap-4">
-        <div className="w-20 h-20">
+      <div className="flex items-center gap-4 mt-3">
+        <div className="w-[72px] h-[72px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              <Pie data={pieData} cx="50%" cy="50%" innerRadius={22} outerRadius={35} dataKey="value" strokeWidth={0}>
+              <Pie data={pieData} cx="50%" cy="50%" innerRadius={22} outerRadius={32} dataKey="value" strokeWidth={0}>
                 {pieData.map((_, i) => (
                   <Cell key={i} fill={COLORS[i]} />
                 ))}
@@ -41,20 +41,25 @@ const PortfolioSummary = ({ portfolio, currentPrice }: PortfolioSummaryProps) =>
         </div>
         <div>
           <div className="text-lg font-bold font-mono text-foreground">{formatUSD(totalValue)}</div>
-          <div className={`text-xs font-mono ${pnl >= 0 ? 'text-trading-green' : 'text-trading-red'}`}>
-            {pnl >= 0 ? '+' : ''}{formatUSD(pnl)} ({formatNumber(pnlPercent)}%)
+          <div className={`flex items-center gap-1.5 mt-0.5`}>
+            <span className={`text-xs font-mono px-1.5 py-0.5 rounded ${pnl >= 0 ? 'bg-trading-green/10 text-trading-green' : 'bg-trading-red/10 text-trading-red'}`}>
+              {pnl >= 0 ? '+' : ''}{formatUSD(pnl)}
+            </span>
+            <span className={`text-[10px] font-mono ${pnl >= 0 ? 'text-trading-green' : 'text-trading-red'}`}>
+              ({formatNumber(pnlPercent)}%)
+            </span>
           </div>
         </div>
       </div>
 
-      <div className="space-y-2 text-xs">
+      <div className="space-y-2.5 text-xs pt-1">
         <div className="flex justify-between">
-          <span className="text-muted-foreground">USDT Balance</span>
+          <span className="text-muted-foreground">USDT</span>
           <span className="font-mono text-foreground">{formatUSD(portfolio.usdtBalance)}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-muted-foreground">BTC Balance</span>
-          <span className="font-mono text-foreground">{formatBTC(portfolio.btcBalance)} BTC</span>
+          <span className="text-muted-foreground">BTC</span>
+          <span className="font-mono text-foreground">{formatBTC(portfolio.btcBalance)}</span>
         </div>
         <div className="flex justify-between">
           <span className="text-muted-foreground">BTC Value</span>
@@ -62,7 +67,7 @@ const PortfolioSummary = ({ portfolio, currentPrice }: PortfolioSummaryProps) =>
         </div>
         {avgEntry > 0 && (
           <>
-            <div className="flex justify-between border-t border-border pt-2">
+            <div className="border-t border-border/30 pt-2 flex justify-between">
               <span className="text-muted-foreground">Avg Entry</span>
               <span className="font-mono text-foreground">{formatUSD(avgEntry)}</span>
             </div>
