@@ -114,37 +114,31 @@ const Profile = () => {
         {/* Holdings */}
         <div className="glass-panel rounded-xl p-6">
           <h3 className="section-header mb-4">Holdings</h3>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between py-2">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                  <span className="text-primary font-bold text-xs">₮</span>
+          <div className="space-y-1">
+            {[
+              { symbol: 'USDT', name: 'Tether', icon: '₮', balance: formatUSD(portfolio.usdtBalance), sub: '', color: 'hsl(152, 69%, 46%)' },
+              { symbol: 'BTC', name: 'Bitcoin', icon: '₿', balance: `${formatBTC(portfolio.btcBalance)} BTC`, sub: formatUSD(btcValue), color: 'hsl(35, 95%, 55%)' },
+              { symbol: 'ETH', name: 'Ethereum', icon: 'Ξ', balance: '1.2450 ETH', sub: formatUSD(4297.75), color: 'hsl(225, 60%, 58%)' },
+              { symbol: 'SOL', name: 'Solana', icon: 'S', balance: '25.8000 SOL', sub: formatUSD(4605.30), color: 'hsl(270, 80%, 60%)' },
+              { symbol: 'XRP', name: 'Ripple', icon: 'X', balance: '1,500.0000 XRP', sub: formatUSD(3525), color: 'hsl(210, 10%, 50%)' },
+              { symbol: 'ADA', name: 'Cardano', icon: 'A', balance: '3,200.0000 ADA', sub: formatUSD(2304), color: 'hsl(210, 70%, 55%)' },
+            ].map((h, i) => (
+              <div key={h.symbol} className="flex items-center justify-between py-2.5 border-b border-border/30 last:border-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ backgroundColor: h.color + '18', color: h.color }}>
+                    {h.icon}
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-foreground">{h.symbol}</div>
+                    <div className="text-xs text-muted-foreground">{h.name}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-sm font-medium text-foreground">USDT</div>
-                  <div className="text-xs text-muted-foreground">Tether</div>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-sm font-mono font-medium text-foreground">{formatUSD(portfolio.usdtBalance)}</div>
-              </div>
-            </div>
-            <div className="border-t border-border" />
-            <div className="flex items-center justify-between py-2">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                  <span className="text-primary font-bold text-xs">₿</span>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-foreground">BTC</div>
-                  <div className="text-xs text-muted-foreground">Bitcoin</div>
+                <div className="text-right">
+                  <div className="text-sm font-mono font-medium text-foreground">{h.balance}</div>
+                  {h.sub && <div className="text-xs font-mono text-muted-foreground">{h.sub}</div>}
                 </div>
               </div>
-              <div className="text-right">
-                <div className="text-sm font-mono font-medium text-foreground">{formatBTC(portfolio.btcBalance)} BTC</div>
-                <div className="text-xs font-mono text-muted-foreground">{formatUSD(btcValue)}</div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
