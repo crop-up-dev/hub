@@ -8,7 +8,12 @@ interface PortfolioSummaryProps {
 
 const PortfolioSummary = ({ portfolio, currentPrice }: PortfolioSummaryProps) => {
   const btcValue = portfolio.btcBalance * currentPrice;
-  const totalValue = portfolio.usdtBalance + btcValue;
+  // Simulated other crypto values
+  const ethValue = 1.245 * 3450.20;
+  const solValue = 25.8 * 178.50;
+  const xrpValue = 1500 * 2.35;
+  const adaValue = 3200 * 0.72;
+  const totalValue = portfolio.usdtBalance + btcValue + ethValue + solValue + xrpValue + adaValue;
   const pnl = totalValue - 10000;
   const pnlPercent = (pnl / 10000) * 100;
   const avgEntry = getAverageEntryPrice(portfolio.trades);
@@ -19,9 +24,13 @@ const PortfolioSummary = ({ portfolio, currentPrice }: PortfolioSummaryProps) =>
   const pieData = [
     { name: 'USDT', value: portfolio.usdtBalance },
     { name: 'BTC', value: btcValue },
+    { name: 'ETH', value: ethValue },
+    { name: 'SOL', value: solValue },
+    { name: 'XRP', value: xrpValue },
+    { name: 'ADA', value: adaValue },
   ].filter(d => d.value > 0);
 
-  const COLORS = ['hsl(47, 100%, 50%)', 'hsl(25, 95%, 53%)'];
+  const COLORS = ['hsl(47, 100%, 50%)', 'hsl(35, 95%, 55%)', 'hsl(225, 60%, 58%)', 'hsl(270, 80%, 60%)', 'hsl(210, 10%, 50%)', 'hsl(210, 70%, 55%)'];
 
   return (
     <div className="p-4 space-y-4">

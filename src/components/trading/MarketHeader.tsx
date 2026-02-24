@@ -23,13 +23,12 @@ const MarketHeader = ({ profile, portfolio, onProfileUpdate, onResetAccount }: M
       <div className="flex items-center gap-5 overflow-x-auto">
         <div className="flex items-center gap-2.5 shrink-0">
           <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center glow-primary">
-            <span className="text-primary font-bold text-sm">₿</span>
+            <span className="text-primary font-bold text-sm tracking-tight">H</span>
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-semibold text-foreground text-sm">BTC</span>
-              <span className="text-muted-foreground text-sm">/</span>
-              <span className="text-muted-foreground text-sm">USDT</span>
+              <span className="font-bold text-primary text-sm tracking-wide">HUB</span>
+              <span className="text-muted-foreground text-[10px]">BTC/USDT</span>
             </div>
           </div>
         </div>
