@@ -38,29 +38,29 @@ const Index = () => {
       />
 
       {/* Main trading grid */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_280px_280px] gap-px bg-border/40">
-        {/* Left column: Chart on top, Trade History below */}
-        <div className="flex flex-col gap-px bg-border/40">
-          <div className="bg-card h-[520px]">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_280px_280px] gap-[1px] bg-border/50 overflow-hidden">
+        {/* Left column: Chart + Trade History + Order Book */}
+        <div className="flex flex-col gap-[1px] bg-border/50">
+          <div className="bg-card h-[480px]">
             <PriceChart />
           </div>
-          <div className="bg-card flex-1 min-h-[180px]">
+          <div className="bg-card min-h-[160px] max-h-[220px]">
             <TradeHistory trades={portfolio.trades} />
+          </div>
+          <div className="bg-card flex-1 min-h-[240px]">
+            <OrderBook />
           </div>
         </div>
 
-        {/* Middle column: Order Book on top, Market Trades below */}
-        <div className="flex flex-col gap-px bg-border/40">
+        {/* Middle column: Market Trades (full height) */}
+        <div className="flex flex-col gap-[1px] bg-border/50">
           <div className="bg-card flex-1 min-h-0">
-            <OrderBook />
-          </div>
-          <div className="bg-card min-h-[280px]">
             <RecentTrades />
           </div>
         </div>
 
-        {/* Right column: Trade Panel on top, Portfolio below */}
-        <div className="flex flex-col gap-px bg-border/40">
+        {/* Right column: Trade Panel + Portfolio */}
+        <div className="flex flex-col gap-[1px] bg-border/50">
           <div className="bg-card">
             <TradePanel
               portfolio={portfolio}
@@ -68,7 +68,7 @@ const Index = () => {
               onTradeExecuted={setPortfolio}
             />
           </div>
-          <div className="bg-card flex-1">
+          <div className="bg-card flex-1 min-h-0">
             <PortfolioSummary portfolio={portfolio} currentPrice={ticker.price} />
           </div>
         </div>

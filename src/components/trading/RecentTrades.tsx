@@ -5,7 +5,7 @@ const RecentTrades = () => {
   const trades = useRecentTrades();
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col h-full">
       <div className="px-3 py-2 border-b border-border/50">
         <span className="section-header">Market Trades</span>
       </div>
@@ -14,7 +14,7 @@ const RecentTrades = () => {
         <span className="text-right">Amount</span>
         <span className="text-right">Time</span>
       </div>
-      <div className="overflow-y-auto max-h-[300px] scrollbar-thin">
+      <div className="overflow-y-auto flex-1 scrollbar-thin">
         {trades.map((trade, i) => (
           <div key={i} className="grid grid-cols-3 px-3 py-[2px] text-[11px] font-mono hover:bg-accent/20 transition-colors">
             <span className={trade.isBuyerMaker ? 'text-trading-red' : 'text-trading-green'}>

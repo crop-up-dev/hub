@@ -18,7 +18,7 @@ const MarketHeader = ({ profile, portfolio, onProfileUpdate, onResetAccount }: M
   const priceDirection = ticker.price > prevPrice ? 'up' : ticker.price < prevPrice ? 'down' : 'same';
 
   return (
-    <header className="flex items-center justify-between px-4 py-2.5 border-b border-border bg-card/80 backdrop-blur-md">
+    <header className="flex items-center justify-between px-4 py-2.5 border-b border-border bg-card/90 backdrop-blur-md sticky top-0 z-50">
       {/* Left: Logo + Pair */}
       <div className="flex items-center gap-5 overflow-x-auto">
         <div className="flex items-center gap-2.5 shrink-0">
