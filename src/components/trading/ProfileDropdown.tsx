@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { UserProfile, getInitials, getAvatarColor, saveProfile } from '@/lib/profile';
 import { Portfolio, formatUSD } from '@/lib/trading';
-import { User, Settings, LogOut, ChevronDown } from 'lucide-react';
+import { User, Settings, LogOut, ChevronDown, Wallet } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
@@ -61,6 +61,11 @@ const ProfileDropdown = ({ profile, portfolio, currentPrice, onProfileUpdate, on
         <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer">
           <User className="w-4 h-4 mr-2" />
           View Profile
+        </DropdownMenuItem>
+
+        <DropdownMenuItem onClick={() => navigate('/wallet')} className="cursor-pointer">
+          <Wallet className="w-4 h-4 mr-2" />
+          Wallet
         </DropdownMenuItem>
 
         <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer">

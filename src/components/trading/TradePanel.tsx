@@ -38,7 +38,7 @@ const TradePanel = ({ portfolio, currentPrice, onTradeExecuted }: TradePanelProp
       setAmount('');
       setPrice('');
       toast.success(
-        `${side === 'buy' ? 'Bought' : 'Sold'} ${formatBTC(amountNum)} BTC @ ${formatUSD(effectivePrice)}`,
+        `${side === 'buy' ? 'Sent' : 'Received'} ${formatBTC(amountNum)} BTC @ ${formatUSD(effectivePrice)}`,
         { description: `Total: ${formatUSD(total)}` }
       );
     } catch (e: any) {
@@ -60,7 +60,7 @@ const TradePanel = ({ portfolio, currentPrice, onTradeExecuted }: TradePanelProp
             side === 'buy' ? 'bg-trading-green text-primary-foreground glow-green' : 'bg-secondary text-muted-foreground hover:bg-accent'
           }`}
         >
-          Buy
+          Send
         </button>
         <button
           onClick={() => setSide('sell')}
@@ -68,7 +68,7 @@ const TradePanel = ({ portfolio, currentPrice, onTradeExecuted }: TradePanelProp
             side === 'sell' ? 'bg-trading-red text-primary-foreground glow-red' : 'bg-secondary text-muted-foreground hover:bg-accent'
           }`}
         >
-          Sell
+          Receive
         </button>
       </div>
 
@@ -153,7 +153,7 @@ const TradePanel = ({ portfolio, currentPrice, onTradeExecuted }: TradePanelProp
             side === 'buy' ? 'bg-trading-green hover:bg-trading-green/90 glow-green' : 'bg-trading-red hover:bg-trading-red/90 glow-red'
           } text-primary-foreground`}
         >
-          {side === 'buy' ? 'Buy' : 'Sell'} BTC
+          {side === 'buy' ? 'Send' : 'Receive'} BTC
         </Button>
       </div>
     </div>
