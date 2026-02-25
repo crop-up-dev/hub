@@ -11,9 +11,9 @@ const INTERVALS = [
   { label: '1D', value: '1d' },
 ];
 
-const PriceChart = () => {
+const PriceChart = ({ symbol = 'btcusdt' }: { symbol?: string }) => {
   const [interval, setInterval] = useState('1h');
-  const klines = useBinanceKlines(interval);
+  const klines = useBinanceKlines(symbol, interval);
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const candleSeriesRef = useRef<any>(null);

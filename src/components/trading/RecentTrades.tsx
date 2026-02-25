@@ -1,8 +1,8 @@
 import { useRecentTrades } from '@/hooks/useBinanceData';
 import { formatNumber } from '@/lib/trading';
 
-const RecentTrades = () => {
-  const trades = useRecentTrades();
+const RecentTrades = ({ symbol = 'btcusdt' }: { symbol?: string }) => {
+  const trades = useRecentTrades(symbol);
 
   return (
     <div className="flex flex-col h-full">

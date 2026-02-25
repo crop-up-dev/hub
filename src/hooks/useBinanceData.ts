@@ -21,7 +21,7 @@ export interface OrderBookData {
   asks: OrderBookEntry[];
 }
 
-export function useBinanceTicker() {
+export function useBinanceTicker(symbol = 'btcusdt') {
   const [ticker, setTicker] = useState<TickerData>({
     price: 0, priceChange: 0, priceChangePercent: 0,
     high: 0, low: 0, volume: 0, quoteVolume: 0,
@@ -29,7 +29,8 @@ export function useBinanceTicker() {
   const [prevPrice, setPrevPrice] = useState(0);
 
   useEffect(() => {
-    const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
+    setTicker({ price: 0, priceChange: 0, priceChangePercent: 0, high: 0, low: 0, volume: 0, quoteVolume: 0 });
+    const ws = new WebSocket(`wss://stream.binance.com:9443/ws/${symbol.toLowerCase()}@ticker`);
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       setTicker(prev => {
@@ -46,16 +47,17 @@ export function useBinanceTicker() {
       });
     };
     return () => ws.close();
-  }, []);
+  }, [symbol]);
 
   return { ticker, prevPrice };
 }
 
-export function useBinanceOrderBook(depth = 20) {
+export function useBinanceOrderBook(symbol = 'btcusdt', depth = 20) {
   const [orderBook, setOrderBook] = useState<OrderBookData>({ bids: [], asks: [] });
 
   useEffect(() => {
-    const ws = new WebSocket(`wss://stream.binance.com:9443/ws/btcusdt@depth${depth}@100ms`);
+    setOrderBook({ bids: [], asks: [] });
+    const ws = new WebSocket(`wss://stream.binance.com:9443/ws/${symbol.toLowerCase()}@depth${depth}@100ms`);
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       const processEntries = (entries: string[][]): OrderBookEntry[] => {
@@ -73,7 +75,7 @@ export function useBinanceOrderBook(depth = 20) {
       });
     };
     return () => ws.close();
-  }, [depth]);
+  }, [symbol, depth]);
 
   return orderBook;
 }
@@ -87,14 +89,14 @@ export interface KlineData {
   volume: number;
 }
 
-export function useBinanceKlines(interval = '1h') {
+export function useBinanceKlines(symbol = 'btcusdt', interval = '1h') {
   const [klines, setKlines] = useState<KlineData[]>([]);
   const wsRef = useRef<WebSocket | null>(null);
 
-  const fetchHistorical = useCallback(async (intv: string) => {
+  const fetchHistorical = useCallback(async (sym: string, intv: string) => {
     try {
       const res = await fetch(
-        `https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=${intv}&limit=200`
+        `https://api.binance.com/api/v3/klines?symbol=${sym.toUpperCase()}&interval=${intv}&limit=200`
       );
       const data = await res.json();
       const parsed: KlineData[] = data.map((k: any[]) => ({
@@ -112,10 +114,11 @@ export function useBinanceKlines(interval = '1h') {
   }, []);
 
   useEffect(() => {
-    fetchHistorical(interval);
+    setKlines([]);
+    fetchHistorical(symbol, interval);
 
     if (wsRef.current) wsRef.current.close();
-    const ws = new WebSocket(`wss://stream.binance.com:9443/ws/btcusdt@kline_${interval}`);
+    const ws = new WebSocket(`wss://stream.binance.com:9443/ws/${symbol.toLowerCase()}@kline_${interval}`);
     wsRef.current = ws;
 
     ws.onmessage = (event) => {
@@ -141,16 +144,17 @@ export function useBinanceKlines(interval = '1h') {
     };
 
     return () => ws.close();
-  }, [interval, fetchHistorical]);
+  }, [symbol, interval, fetchHistorical]);
 
   return klines;
 }
 
-export function useRecentTrades() {
+export function useRecentTrades(symbol = 'btcusdt') {
   const [trades, setTrades] = useState<{ price: number; qty: number; isBuyerMaker: boolean; time: number }[]>([]);
 
   useEffect(() => {
-    const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@trade');
+    setTrades([]);
+    const ws = new WebSocket(`wss://stream.binance.com:9443/ws/${symbol.toLowerCase()}@trade`);
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       setTrades(prev => [
@@ -159,7 +163,15 @@ export function useRecentTrades() {
       ]);
     };
     return () => ws.close();
-  }, []);
+  }, [symbol]);
 
   return trades;
 }
+
+export const SUPPORTED_ASSETS = [
+  { symbol: 'btcusdt', base: 'BTC', name: 'Bitcoin' },
+  { symbol: 'ethusdt', base: 'ETH', name: 'Ethereum' },
+  { symbol: 'solusdt', base: 'SOL', name: 'Solana' },
+  { symbol: 'xrpusdt', base: 'XRP', name: 'XRP' },
+  { symbol: 'adausdt', base: 'ADA', name: 'Cardano' },
+] as const;
