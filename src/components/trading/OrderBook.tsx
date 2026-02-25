@@ -1,8 +1,8 @@
 import { useBinanceOrderBook } from '@/hooks/useBinanceData';
 import { formatNumber } from '@/lib/trading';
 
-const OrderBook = () => {
-  const { bids, asks } = useBinanceOrderBook(15);
+const OrderBook = ({ symbol = 'btcusdt' }: { symbol?: string }) => {
+  const { bids, asks } = useBinanceOrderBook(symbol, 15);
 
   const maxTotal = Math.max(
     bids.length > 0 ? bids[bids.length - 1]?.total || 0 : 0,

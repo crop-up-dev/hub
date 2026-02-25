@@ -14,7 +14,8 @@ import { toast } from 'sonner';
 const Index = () => {
   const [portfolio, setPortfolio] = useState<Portfolio>(loadPortfolio);
   const [profile, setProfile] = useState<UserProfile>(loadProfile);
-  const { ticker } = useBinanceTicker();
+  const [selectedSymbol, setSelectedSymbol] = useState('btcusdt');
+  const { ticker } = useBinanceTicker(selectedSymbol);
 
   const handleProfileUpdate = (updated: UserProfile) => {
     saveProfile(updated);
@@ -35,6 +36,8 @@ const Index = () => {
         portfolio={portfolio}
         onProfileUpdate={handleProfileUpdate}
         onResetAccount={handleResetAccount}
+        selectedSymbol={selectedSymbol}
+        onSymbolChange={setSelectedSymbol}
       />
 
       {/* Main trading grid */}
@@ -42,20 +45,20 @@ const Index = () => {
         {/* Left column: Chart + Trade History + Order Book */}
         <div className="flex flex-col gap-[1px] bg-border/50">
           <div className="bg-card h-[480px]">
-            <PriceChart />
+            <PriceChart symbol={selectedSymbol} />
           </div>
           <div className="bg-card min-h-[160px] max-h-[220px]">
             <TradeHistory trades={portfolio.trades} />
           </div>
           <div className="bg-card flex-1 min-h-[240px]">
-            <OrderBook />
+            <OrderBook symbol={selectedSymbol} />
           </div>
         </div>
 
         {/* Middle column: Market Trades (full height) */}
         <div className="flex flex-col gap-[1px] bg-border/50">
           <div className="bg-card flex-1 min-h-0">
-            <RecentTrades />
+            <RecentTrades symbol={selectedSymbol} />
           </div>
         </div>
 
