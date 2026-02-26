@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { UserProfile, getInitials, getAvatarColor, saveProfile } from '@/lib/profile';
 import { Portfolio, formatUSD } from '@/lib/trading';
-import { User, Settings, LogOut, ChevronDown, Wallet } from 'lucide-react';
+import { getCurrentUser, logout } from '@/lib/auth';
+import { User, Settings, LogOut, ChevronDown, Wallet, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
@@ -21,6 +22,7 @@ interface ProfileDropdownProps {
 
 const ProfileDropdown = ({ profile, portfolio, currentPrice, onProfileUpdate, onResetAccount }: ProfileDropdownProps) => {
   const navigate = useNavigate();
+  const authUser = getCurrentUser();
   const totalValue = portfolio.usdtBalance + portfolio.btcBalance * currentPrice;
   const pnl = totalValue - 10000;
   const initials = getInitials(profile.displayName);
@@ -73,11 +75,18 @@ const ProfileDropdown = ({ profile, portfolio, currentPrice, onProfileUpdate, on
           Settings
         </DropdownMenuItem>
 
+        {authUser?.role === 'admin' && (
+          <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer">
+            <ShieldCheck className="w-4 h-4 mr-2" />
+            Admin Panel
+          </DropdownMenuItem>
+        )}
+
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem onClick={onResetAccount} className="cursor-pointer text-destructive focus:text-destructive">
+        <DropdownMenuItem onClick={() => { logout(); navigate('/login'); }} className="cursor-pointer text-destructive focus:text-destructive">
           <LogOut className="w-4 h-4 mr-2" />
-          Reset Account
+          Logout
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
