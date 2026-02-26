@@ -1,56 +1,60 @@
 
 
-# Premium Bitcoin & USDT Trading Platform
+## Plan: Auth Pages + Admin Panel (localStorage-based)
 
-A professional paper-trading platform with real-time crypto data, styled like Binance with a dark theme. Fully client-side with localStorage — GitHub Pages ready (no backend needed).
+### Overview
+Build a frontend-only authentication system using localStorage, with Sign Up, Login pages, and an Admin panel. All data stays in the browser -- no real backend security, purely for demo/prototype purposes.
 
----
+### New Files
 
-## 1. Dashboard / Home Page
-- **Market overview** showing BTC/USDT live price, 24h change, volume, and high/low
-- **Portfolio summary** card with total balance, unrealized P&L, and asset allocation (pie chart)
-- **Quick trade** widget for fast buy/sell access
+1. **`src/lib/auth.ts`** -- Auth utilities
+   - `User` interface: `id`, `email`, `password` (hashed with simple base64 for demo), `displayName`, `role` (`user` | `admin`), `createdAt`, `isActive`
+   - `USERS_KEY` and `SESSION_KEY` localStorage keys
+   - Functions: `register()`, `login()`, `logout()`, `getCurrentUser()`, `getAllUsers()`, `updateUser()`, `toggleUserActive()`
+   - Seed a default admin account: `admin@hub.com` / `admin123`
 
-## 2. Live Price Charts
-- Real-time candlestick chart for BTC/USDT using free CoinGecko or Binance public API
-- Timeframe toggles (1m, 5m, 15m, 1h, 4h, 1D)
-- Volume bars below the chart
-- Price indicators and moving averages overlay
+2. **`src/pages/Login.tsx`** -- Login page
+   - Dark themed form matching the trading UI aesthetic
+   - Email + password fields, "Login" button, link to Sign Up
+   - Validates credentials against localStorage users
+   - Redirects to `/` on success, shows error toast on failure
 
-## 3. Trading Panel (Buy & Sell)
-- Market order and limit order types
-- Buy/Sell toggle with green/red color coding
-- Amount input with percentage quick-select (25%, 50%, 75%, 100% of balance)
-- Order confirmation with estimated total
-- Starting paper balance of $10,000 USDT
+3. **`src/pages/SignUp.tsx`** -- Registration page
+   - Display name, email, password, confirm password fields
+   - Client-side validation (email format, password match, min length)
+   - Creates user with `role: 'user'`, redirects to login on success
 
-## 4. Order Book / Market Depth
-- Live bid/ask order book display using Binance public WebSocket API
-- Visual depth chart showing buy/sell walls
-- Real-time updates with green (bids) and red (asks)
+4. **`src/pages/Admin.tsx`** -- Admin dashboard
+   - Only accessible when logged-in user has `role: 'admin'`
+   - **Users table**: list all registered users with columns: name, email, role, joined date, status (active/inactive)
+   - **Actions per user**: toggle active/inactive, change role, delete user
+   - **Stats cards** at top: total users, active users, new users (last 7 days)
+   - Back button to return to trading dashboard
 
-## 5. Trade History
-- Complete log of all executed paper trades
-- Columns: date, pair, side (buy/sell), price, amount, total, P&L
-- Filterable and sortable table
-- Export to CSV option
+5. **`src/components/ProtectedRoute.tsx`** -- Route guard component
+   - Checks `getCurrentUser()` -- if not logged in, redirect to `/login`
+   - Optional `adminOnly` prop that also checks role
 
-## 6. Portfolio View
-- Current holdings breakdown (BTC balance, USDT balance)
-- Average entry price and unrealized P&L per asset
-- Allocation donut chart
-- Balance history line chart over time
+### Modified Files
 
-## 7. Design & UX
-- **Dark Binance-style theme**: deep navy/charcoal background, green for buy/profit, red for sell/loss
-- Professional typography and data-dense layout
-- Responsive design for desktop and tablet
-- Smooth animations on price updates and order execution
-- Toast notifications for trade confirmations
+6. **`src/App.tsx`** -- Add routes
+   - Add `/login`, `/signup`, `/admin` routes
+   - Wrap `/`, `/profile`, `/wallet`, `/admin` in `ProtectedRoute`
+   - Admin route uses `ProtectedRoute adminOnly`
 
-## 8. Technical Approach
-- Real-time price data from free public APIs (CoinGecko / Binance public endpoints)
-- All account data (balance, trades, portfolio) stored in **localStorage**
-- Static single-page app — **fully GitHub Pages compatible** (no server required)
-- Single account system with no authentication needed
+7. **`src/components/trading/ProfileDropdown.tsx`** -- Add admin + logout
+   - Add "Admin Panel" menu item (only visible if user role is admin)
+   - Change "Reset Account" to "Logout" which calls `logout()` and redirects to `/login`
+
+8. **`src/lib/profile.ts`** -- Link profile to auth user
+   - On login, auto-create/load profile keyed by user ID
+
+### Technical Details
+
+- Passwords stored with simple btoa() encoding (demo only, not secure)
+- Session stored as user ID in localStorage under `hub-session`
+- Users array stored in localStorage under `hub-users`
+- Admin panel uses existing `Table` component from `src/components/ui/table.tsx`
+- Forms use existing `Input`, `Button`, `Label` components
+- All pages follow the dark trading UI theme with `glass-panel` styling
 
