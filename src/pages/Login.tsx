@@ -70,9 +70,6 @@ const Login = () => {
           Don't have an account?{' '}
           <Link to="/signup" className="text-primary hover:underline font-medium">Sign Up</Link>
         </p>
-        <p className="text-center text-xs text-muted-foreground/60">
-          Demo admin: admin@hub.com / admin123
-        </p>
       </div>
     </div>
   );

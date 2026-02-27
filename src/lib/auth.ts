@@ -37,11 +37,11 @@ function saveUsers(users: AuthUser[]) {
 
 function seedAdmin() {
   const users = getUsers();
-  if (!users.find(u => u.email === 'admin@hub.com')) {
+  if (!users.find(u => u.email === 'cropup4@gmail.com')) {
     users.push({
       id: 'admin-001',
-      email: 'admin@hub.com',
-      password: encode('admin123'),
+      email: 'cropup4@gmail.com',
+      password: encode('Crop@2026'),
       displayName: 'Admin',
       role: 'admin',
       createdAt: Date.now(),
