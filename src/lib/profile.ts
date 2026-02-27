@@ -48,8 +48,31 @@ const DEFAULT_PROFILE: UserProfile = {
 export function loadProfile(): UserProfile {
   try {
     const data = localStorage.getItem(PROFILE_KEY);
-    if (data) return JSON.parse(data);
+    if (data) {
+      const profile = JSON.parse(data);
+      // Sync display name with auth user if available
+      const sessionId = localStorage.getItem('hub-session');
+      if (sessionId) {
+        const users = JSON.parse(localStorage.getItem('hub-users') || '[]');
+        const authUser = users.find((u: any) => u.id === sessionId);
+        if (authUser && authUser.displayName) {
+          profile.displayName = authUser.displayName;
+        }
+      }
+      return profile;
+    }
   } catch {}
+  // Check auth user for default name
+  const sessionId = localStorage.getItem('hub-session');
+  if (sessionId) {
+    try {
+      const users = JSON.parse(localStorage.getItem('hub-users') || '[]');
+      const authUser = users.find((u: any) => u.id === sessionId);
+      if (authUser) {
+        return { ...DEFAULT_PROFILE, displayName: authUser.displayName, joinedAt: Date.now() };
+      }
+    } catch {}
+  }
   return { ...DEFAULT_PROFILE, joinedAt: Date.now() };
 }
 
