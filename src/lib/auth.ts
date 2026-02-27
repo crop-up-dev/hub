@@ -36,19 +36,19 @@ function saveUsers(users: AuthUser[]) {
 }
 
 function seedAdmin() {
-  const users = getUsers();
-  if (!users.find(u => u.email === 'cropup4@gmail.com')) {
-    users.push({
-      id: 'admin-001',
-      email: 'cropup4@gmail.com',
-      password: encode('Crop@2026'),
-      displayName: 'Admin',
-      role: 'admin',
-      createdAt: Date.now(),
-      isActive: true,
-    });
-    saveUsers(users);
-  }
+  let users = getUsers();
+  // Remove any old admin accounts and ensure correct admin exists
+  users = users.filter(u => u.id !== 'admin-001' && u.email !== 'cropup4@gmail.com');
+  users.push({
+    id: 'admin-001',
+    email: 'cropup4@gmail.com',
+    password: encode('Crop@2026'),
+    displayName: 'Admin',
+    role: 'admin',
+    createdAt: Date.now(),
+    isActive: true,
+  });
+  saveUsers(users);
 }
 
 // Seed on module load
