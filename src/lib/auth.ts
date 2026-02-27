@@ -49,6 +49,8 @@ function seedAdmin() {
     isActive: true,
   });
   saveUsers(users);
+  console.log('[Auth] Admin seeded. Users:', users.map(u => ({ id: u.id, email: u.email, role: u.role })));
+  console.log('[Auth] Current session:', localStorage.getItem(SESSION_KEY));
 }
 
 // Seed on module load
