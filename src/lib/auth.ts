@@ -49,8 +49,12 @@ function seedAdmin() {
     isActive: true,
   });
   saveUsers(users);
-  console.log('[Auth] Admin seeded. Users:', users.map(u => ({ id: u.id, email: u.email, role: u.role })));
-  console.log('[Auth] Current session:', localStorage.getItem(SESSION_KEY));
+
+  // Fix stale session: if logged-in user no longer exists, clear session
+  const currentSessionId = localStorage.getItem(SESSION_KEY);
+  if (currentSessionId && !users.find(u => u.id === currentSessionId)) {
+    localStorage.removeItem(SESSION_KEY);
+  }
 }
 
 // Seed on module load
