@@ -8,7 +8,7 @@ import Profile from "./pages/Profile";
 import Wallet from "./pages/Wallet";
 import Markets from "./pages/Markets";
 import BinaryTrading from "./pages/BinaryTrading";
-import NEFT from "./pages/NEFT";
+import NFTTokens from "./pages/NFTTokens";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Admin from "./pages/Admin";
@@ -31,7 +31,7 @@ const App = () => (
           <Route path="/wallet" element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
           <Route path="/markets" element={<ProtectedRoute><Markets /></ProtectedRoute>} />
           <Route path="/binary" element={<ProtectedRoute><BinaryTrading /></ProtectedRoute>} />
-          <Route path="/neft" element={<ProtectedRoute><NEFT /></ProtectedRoute>} />
+          <Route path="/nft" element={<ProtectedRoute><NFTTokens /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute adminOnly><Admin /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -2,20 +2,20 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, TrendingUp, TrendingDown } from 'lucide-react';
-import { COMMODITY_ASSETS, FOREX_ASSETS, STOCK_ASSETS, NFT_ASSETS, AssetDefinition } from '@/lib/assets';
+import { NFT_ASSETS, AssetDefinition } from '@/lib/assets';
 import { useAssetPrice } from '@/hooks/useMarketData';
 import { formatNumber } from '@/lib/trading';
 
-const AssetRow = ({ asset }: { asset: AssetDefinition }) => {
+const NFTAssetRow = ({ asset }: { asset: AssetDefinition }) => {
   const { price, changePercent } = useAssetPrice(asset.symbol, asset.binanceSymbol);
   const isUp = changePercent >= 0;
 
   return (
-    <div className="flex items-center justify-between p-3 rounded-xl hover:bg-accent/30 transition-all">
+    <div className="flex items-center justify-between p-4 rounded-xl hover:bg-accent/30 transition-all">
       <div className="flex items-center gap-3">
         <div
-          className="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold"
-          style={{ backgroundColor: asset.color + '18', color: asset.color }}
+          className="w-10 h-10 rounded-full flex items-center justify-center text-lg"
+          style={{ backgroundColor: asset.color + '18' }}
         >
           {asset.icon}
         </div>
@@ -37,18 +37,8 @@ const AssetRow = ({ asset }: { asset: AssetDefinition }) => {
   );
 };
 
-const Markets = () => {
+const NFTTokens = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'commodities' | 'forex' | 'stocks' | 'nft'>('commodities');
-
-  const tabs = [
-    { key: 'commodities' as const, label: 'Commodities', assets: COMMODITY_ASSETS },
-    { key: 'forex' as const, label: 'Forex', assets: FOREX_ASSETS },
-    { key: 'stocks' as const, label: 'Stocks', assets: STOCK_ASSETS },
-    { key: 'nft' as const, label: 'NFT Tokens', assets: NFT_ASSETS },
-  ];
-
-  const currentTab = tabs.find(t => t.key === activeTab)!;
 
   return (
     <div className="min-h-screen bg-background">
@@ -58,42 +48,27 @@ const Markets = () => {
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <div className="flex-1">
-            <h1 className="text-lg font-semibold text-foreground">Markets</h1>
-            <p className="text-xs text-muted-foreground">Commodities, Forex, Stocks & NFT Tokens</p>
+            <h1 className="text-lg font-semibold text-foreground">NFT Tokens</h1>
+            <p className="text-xs text-muted-foreground">Trade NFT ecosystem tokens</p>
           </div>
         </div>
       </div>
 
       <div className="max-w-5xl mx-auto px-4 py-6 space-y-6">
-        <div className="flex gap-1 bg-secondary/50 rounded-xl p-1">
-          {tabs.map(tab => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all ${
-                activeTab === tab.key
-                  ? 'bg-primary text-primary-foreground glow-primary'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
         <div className="glass-panel rounded-2xl p-5">
-          <h3 className="section-header mb-4">{currentTab.label}</h3>
+          <h3 className="section-header mb-4">NFT Tokens</h3>
           <div className="space-y-1">
-            {currentTab.assets.map(asset => (
-              <AssetRow key={asset.symbol} asset={asset} />
+            {NFT_ASSETS.map(asset => (
+              <NFTAssetRow key={asset.symbol} asset={asset} />
             ))}
           </div>
         </div>
 
         <div className="glass-panel rounded-2xl p-5">
-          <h3 className="section-header mb-4">Quick Trade</h3>
-          <p className="text-xs text-muted-foreground">
-            Select an asset above to trade. Use the main trading dashboard for advanced charting and order types.
+          <h3 className="section-header mb-4">About NFT Tokens</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            NFT tokens represent governance and utility tokens from major NFT ecosystems. 
+            Trade BLUR, APE, MANA, and SAND with real-time prices from Binance.
           </p>
           <Button onClick={() => navigate('/')} className="mt-3 bg-primary text-primary-foreground hover:bg-primary/90">
             Go to Trading Dashboard
@@ -104,4 +79,4 @@ const Markets = () => {
   );
 };
 
-export default Markets;
+export default NFTTokens;
