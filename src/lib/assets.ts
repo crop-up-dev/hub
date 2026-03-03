@@ -1,6 +1,6 @@
 // Asset definitions for all supported classes
 
-export type AssetClass = 'crypto' | 'commodities' | 'forex' | 'stocks' | 'neft';
+export type AssetClass = 'crypto' | 'commodities' | 'forex' | 'stocks' | 'nft';
 
 export interface AssetDefinition {
   symbol: string;
@@ -41,7 +41,14 @@ export const STOCK_ASSETS: AssetDefinition[] = [
   { symbol: 'AMZN', name: 'Amazon.com Inc.', class: 'stocks', icon: 'A', color: 'hsl(30, 90%, 50%)', decimals: 2, unit: '' },
 ];
 
-export const ALL_ASSETS = [...CRYPTO_ASSETS, ...COMMODITY_ASSETS, ...FOREX_ASSETS, ...STOCK_ASSETS];
+export const NFT_ASSETS: AssetDefinition[] = [
+  { symbol: 'BLUR', binanceSymbol: 'blurusdt', name: 'Blur', class: 'nft', icon: '🟣', color: 'hsl(270, 80%, 55%)', decimals: 4, unit: 'BLUR' },
+  { symbol: 'APE', binanceSymbol: 'apeusdt', name: 'ApeCoin', class: 'nft', icon: '🦍', color: 'hsl(45, 80%, 50%)', decimals: 4, unit: 'APE' },
+  { symbol: 'MANA', binanceSymbol: 'manausdt', name: 'Decentraland', class: 'nft', icon: '🌐', color: 'hsl(350, 70%, 55%)', decimals: 4, unit: 'MANA' },
+  { symbol: 'SAND', binanceSymbol: 'sandusdt', name: 'The Sandbox', class: 'nft', icon: '🏖️', color: 'hsl(195, 80%, 50%)', decimals: 4, unit: 'SAND' },
+];
+
+export const ALL_ASSETS = [...CRYPTO_ASSETS, ...COMMODITY_ASSETS, ...FOREX_ASSETS, ...STOCK_ASSETS, ...NFT_ASSETS];
 
 // Simulated base prices for non-Binance assets
 export const SIMULATED_BASE_PRICES: Record<string, number> = {

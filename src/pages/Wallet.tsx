@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Portfolio, loadPortfolio, formatUSD, formatBTC, formatNumber } from '@/lib/trading';
 import { useBinanceTicker } from '@/hooks/useBinanceData';
+import { createTransactionRequest, getUserTransactions, getFees, type TransactionRequest } from '@/lib/transactions';
+import { getCurrentUser } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Copy, ArrowUpRight, ArrowDownLeft, Check } from 'lucide-react';
+import { ArrowLeft, Copy, ArrowUpRight, ArrowDownLeft, Check, Clock, CheckCircle2, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 // Generate a deterministic fake wallet address
@@ -59,12 +61,9 @@ function QRCodeSVG({ data, size = 160 }: { data: string; size?: number }) {
   );
 }
 
-interface CryptoAsset {
+interface CryptoAssetMeta {
   symbol: string;
   name: string;
-  balance: number;
-  displayBalance: string;
-  value: string;
   icon: string;
   color: string;
   addressPrefix: string;
@@ -74,29 +73,27 @@ interface CryptoAsset {
   estFee: string;
 }
 
-const CRYPTO_ASSETS: Omit<CryptoAsset, 'balance' | 'displayBalance' | 'value'>[] = [
-  { symbol: 'BTC', name: 'Bitcoin', icon: '₿', color: 'hsl(35, 95%, 55%)', addressPrefix: 'bc1q', addressSeed: 'btc-wallet-user-main', network: 'Bitcoin Mainnet', confirmations: '3 blocks', estFee: '~0.00005 BTC' },
-  { symbol: 'ETH', name: 'Ethereum', icon: 'Ξ', color: 'hsl(225, 60%, 58%)', addressPrefix: '0x', addressSeed: 'eth-wallet-user-main', network: 'Ethereum Mainnet', confirmations: '12 blocks', estFee: '~0.002 ETH' },
-  { symbol: 'SOL', name: 'Solana', icon: 'S', color: 'hsl(270, 80%, 60%)', addressPrefix: '', addressSeed: 'sol-wallet-user-main', network: 'Solana Mainnet', confirmations: '32 slots', estFee: '~0.00025 SOL' },
-  { symbol: 'XRP', name: 'Ripple', icon: 'X', color: 'hsl(210, 10%, 50%)', addressPrefix: 'r', addressSeed: 'xrp-wallet-user-main', network: 'XRP Ledger', confirmations: '4 ledgers', estFee: '~0.00001 XRP' },
-  { symbol: 'ADA', name: 'Cardano', icon: 'A', color: 'hsl(210, 70%, 55%)', addressPrefix: 'addr1', addressSeed: 'ada-wallet-user-main', network: 'Cardano Mainnet', confirmations: '15 blocks', estFee: '~0.17 ADA' },
-  { symbol: 'USDT', name: 'Tether', icon: '₮', color: 'hsl(152, 69%, 46%)', addressPrefix: '0x', addressSeed: 'usdt-wallet-user-trc20', network: 'Ethereum (ERC-20)', confirmations: '12 blocks', estFee: '~$1.50 USDT' },
+const CRYPTO_ASSETS: CryptoAssetMeta[] = [
+  { symbol: 'BTC', name: 'Bitcoin', icon: '₿', color: 'hsl(35, 95%, 55%)', addressPrefix: 'bc1q', addressSeed: 'btc-wallet-user-main', network: 'Bitcoin Mainnet', confirmations: '3 blocks', estFee: '~0.0005 BTC' },
+  { symbol: 'ETH', name: 'Ethereum', icon: 'Ξ', color: 'hsl(225, 60%, 58%)', addressPrefix: '0x', addressSeed: 'eth-wallet-user-main', network: 'Ethereum Mainnet', confirmations: '12 blocks', estFee: '~0.005 ETH' },
+  { symbol: 'SOL', name: 'Solana', icon: 'S', color: 'hsl(270, 80%, 60%)', addressPrefix: '', addressSeed: 'sol-wallet-user-main', network: 'Solana Mainnet', confirmations: '32 slots', estFee: '~0.01 SOL' },
+  { symbol: 'XRP', name: 'Ripple', icon: 'X', color: 'hsl(210, 10%, 50%)', addressPrefix: 'r', addressSeed: 'xrp-wallet-user-main', network: 'XRP Ledger', confirmations: '4 ledgers', estFee: '~0.25 XRP' },
+  { symbol: 'ADA', name: 'Cardano', icon: 'A', color: 'hsl(210, 70%, 55%)', addressPrefix: 'addr1', addressSeed: 'ada-wallet-user-main', network: 'Cardano Mainnet', confirmations: '15 blocks', estFee: '~1.0 ADA' },
+  { symbol: 'USDT', name: 'Tether', icon: '₮', color: 'hsl(152, 69%, 46%)', addressPrefix: '0x', addressSeed: 'usdt-wallet-user-trc20', network: 'Ethereum (ERC-20)', confirmations: '12 blocks', estFee: '~1.0 USDT' },
+  { symbol: 'GOLD', name: 'Gold', icon: '🥇', color: 'hsl(45, 90%, 50%)', addressPrefix: 'gold_', addressSeed: 'gold-vault-main', network: 'Gold Vault', confirmations: '1 confirmation', estFee: '~0.01 oz' },
+  { symbol: 'SILVER', name: 'Silver', icon: '🥈', color: 'hsl(210, 10%, 65%)', addressPrefix: 'silver_', addressSeed: 'silver-vault-main', network: 'Silver Vault', confirmations: '1 confirmation', estFee: '~0.05 oz' },
+  { symbol: 'BLUR', name: 'Blur', icon: '🟣', color: 'hsl(270, 80%, 55%)', addressPrefix: '0x', addressSeed: 'blur-wallet-main', network: 'Ethereum (ERC-20)', confirmations: '12 blocks', estFee: '~5.0 BLUR' },
+  { symbol: 'APE', name: 'ApeCoin', icon: '🦍', color: 'hsl(45, 80%, 50%)', addressPrefix: '0x', addressSeed: 'ape-wallet-main', network: 'Ethereum (ERC-20)', confirmations: '12 blocks', estFee: '~0.5 APE' },
 ];
 
-// Simulated prices for non-BTC assets
 const SIMULATED_PRICES: Record<string, number> = {
-  ETH: 3450.20,
-  SOL: 178.50,
-  XRP: 2.35,
-  ADA: 0.72,
+  ETH: 3450.20, SOL: 178.50, XRP: 2.35, ADA: 0.72,
+  GOLD: 2650, SILVER: 31.25, BLUR: 0.28, APE: 1.35,
 };
 
-// Simulated balances for the new cryptos
 const SIMULATED_BALANCES: Record<string, number> = {
-  ETH: 1.245,
-  SOL: 25.8,
-  XRP: 1500,
-  ADA: 3200,
+  ETH: 1.245, SOL: 25.8, XRP: 1500, ADA: 3200,
+  GOLD: 0.5, SILVER: 10, BLUR: 500, APE: 200,
 };
 
 const Wallet = () => {
@@ -108,6 +105,10 @@ const Wallet = () => {
   const [sendAmount, setSendAmount] = useState('');
   const [selectedAsset, setSelectedAsset] = useState('BTC');
   const [copied, setCopied] = useState(false);
+  const currentUser = getCurrentUser();
+  const [txnRefresh, setTxnRefresh] = useState(0);
+
+  const userTxns = currentUser ? getUserTransactions(currentUser.id) : [];
 
   const getBalance = (symbol: string) => {
     if (symbol === 'BTC') return portfolio.btcBalance;
@@ -121,7 +122,7 @@ const Wallet = () => {
     return SIMULATED_PRICES[symbol] || 0;
   };
 
-  const assets: CryptoAsset[] = CRYPTO_ASSETS.map(a => {
+  const assets = CRYPTO_ASSETS.map(a => {
     const balance = getBalance(a.symbol);
     const price = getPrice(a.symbol);
     const value = balance * price;
@@ -137,6 +138,7 @@ const Wallet = () => {
   const selectedMeta = CRYPTO_ASSETS.find(a => a.symbol === selectedAsset)!;
   const currentAddress = generateWalletAddress(selectedMeta.addressPrefix, selectedMeta.addressSeed);
   const selectedBalance = getBalance(selectedAsset);
+  const fees = getFees(selectedAsset);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(currentAddress);
@@ -150,16 +152,32 @@ const Wallet = () => {
     if (!sendAmount || parseFloat(sendAmount) <= 0) return toast.error('Enter a valid amount');
     const amt = parseFloat(sendAmount);
     if (amt > selectedBalance) return toast.error(`Insufficient ${selectedAsset} balance`);
-    toast.success(`Sent ${formatNumber(amt, 6)} ${selectedAsset}`, {
-      description: `To: ${sendAddress.slice(0, 12)}...${sendAddress.slice(-6)}`,
+
+    createTransactionRequest('send', selectedAsset, amt, sendAddress.trim());
+    setTxnRefresh(r => r + 1);
+    toast.success(`Send request submitted for admin approval`, {
+      description: `${formatNumber(amt, 6)} ${selectedAsset} • Fee: ${fees.withdrawalFee} ${selectedAsset}`,
     });
     setSendAddress('');
     setSendAmount('');
   };
 
+  const handleReceive = () => {
+    createTransactionRequest('receive', selectedAsset, 0, currentAddress);
+    setTxnRefresh(r => r + 1);
+    toast.success('Receive request submitted for admin approval', {
+      description: `${selectedAsset} deposit address shared`,
+    });
+  };
+
+  const statusIcon = (status: string) => {
+    if (status === 'approved') return <CheckCircle2 className="w-3.5 h-3.5 text-trading-green" />;
+    if (status === 'rejected') return <XCircle className="w-3.5 h-3.5 text-trading-red" />;
+    return <Clock className="w-3.5 h-3.5 text-primary animate-pulse" />;
+  };
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <div className="border-b border-border bg-card/80 backdrop-blur-md">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
           <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="shrink-0">
@@ -167,7 +185,7 @@ const Wallet = () => {
           </Button>
           <div className="flex-1">
             <h1 className="text-lg font-semibold text-foreground">Wallet</h1>
-            <p className="text-xs text-muted-foreground">Manage your crypto assets</p>
+            <p className="text-xs text-muted-foreground">Manage your assets</p>
           </div>
         </div>
       </div>
@@ -280,10 +298,13 @@ const Wallet = () => {
                     </Button>
                   </div>
                 </div>
+                <Button onClick={handleReceive} className="w-full bg-trading-green hover:bg-trading-green/90 text-primary-foreground font-semibold h-11 gap-2">
+                  <ArrowDownLeft className="w-4 h-4" /> Request Receive Approval
+                </Button>
                 <div className="bg-primary/5 border border-primary/10 rounded-lg p-3">
                   <p className="text-[11px] text-muted-foreground leading-relaxed">
-                    <span className="text-primary font-medium">Note:</span> Only send {selectedAsset} to this address.
-                    Sending other assets may result in permanent loss.
+                    <span className="text-primary font-medium">Note:</span> All receive requests require admin approval.
+                    Only send {selectedAsset} to this address.
                   </p>
                 </div>
               </div>
@@ -322,6 +343,19 @@ const Wallet = () => {
                     </button>
                   </div>
                 </div>
+                {/* Fee info */}
+                <div className="text-xs space-y-1 bg-secondary/30 rounded-lg px-3 py-2.5">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Withdrawal Fee</span>
+                    <span className="font-mono text-foreground">{fees.withdrawalFee} {selectedAsset}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">You Receive</span>
+                    <span className="font-mono text-foreground font-medium">
+                      {formatNumber(Math.max(0, (parseFloat(sendAmount) || 0) - fees.withdrawalFee), 6)} {selectedAsset}
+                    </span>
+                  </div>
+                </div>
                 <div className="grid grid-cols-4 gap-1.5">
                   {[0.25, 0.5, 0.75, 1].map(pct => (
                     <button
@@ -334,12 +368,52 @@ const Wallet = () => {
                   ))}
                 </div>
                 <Button onClick={handleSend} className="w-full bg-trading-red hover:bg-trading-red/90 text-primary-foreground font-semibold h-11 gap-2">
-                  <ArrowUpRight className="w-4 h-4" /> Send {selectedAsset}
+                  <ArrowUpRight className="w-4 h-4" /> Submit Send Request
                 </Button>
+                <div className="bg-primary/5 border border-primary/10 rounded-lg p-3">
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                    <span className="text-primary font-medium">Note:</span> All send requests require admin approval before processing.
+                    Standard network fees apply.
+                  </p>
+                </div>
               </div>
             )}
           </div>
         </div>
+
+        {/* Transaction History */}
+        {userTxns.length > 0 && (
+          <div className="glass-panel rounded-2xl p-5">
+            <h3 className="section-header mb-3">Transaction History</h3>
+            <div className="space-y-2">
+              {userTxns.map(txn => (
+                <div key={txn.id} className="flex items-center justify-between p-3 rounded-xl bg-secondary/20">
+                  <div className="flex items-center gap-3">
+                    {statusIcon(txn.status)}
+                    <div>
+                      <p className="text-sm font-medium text-foreground">
+                        {txn.type === 'send' ? 'Send' : 'Receive'} {txn.asset}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(txn.createdAt).toLocaleString()} • {txn.address.slice(0, 10)}...
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-mono font-medium text-foreground">
+                      {txn.type === 'send' ? '-' : '+'}{formatNumber(txn.amount, 6)} {txn.asset}
+                    </p>
+                    <p className={`text-[10px] font-medium capitalize ${
+                      txn.status === 'approved' ? 'text-trading-green' : txn.status === 'rejected' ? 'text-trading-red' : 'text-primary'
+                    }`}>
+                      {txn.status} {txn.fee > 0 ? `• Fee: ${txn.fee} ${txn.asset}` : ''}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Network info */}
         <div className="glass-panel rounded-2xl p-5">

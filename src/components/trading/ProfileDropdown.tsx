@@ -1,8 +1,7 @@
-import { useState } from 'react';
-import { UserProfile, getInitials, getAvatarColor, saveProfile } from '@/lib/profile';
+import { UserProfile, getInitials, getAvatarColor } from '@/lib/profile';
 import { Portfolio, formatUSD } from '@/lib/trading';
 import { getCurrentUser, logout } from '@/lib/auth';
-import { User, Settings, LogOut, ChevronDown, Wallet, ShieldCheck, BarChart3, ArrowLeftRight, Building2 } from 'lucide-react';
+import { User, Settings, LogOut, ChevronDown, Wallet, ShieldCheck, BarChart3, ArrowLeftRight, Gem } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
@@ -20,7 +19,7 @@ interface ProfileDropdownProps {
   onResetAccount: () => void;
 }
 
-const ProfileDropdown = ({ profile, portfolio, currentPrice, onProfileUpdate, onResetAccount }: ProfileDropdownProps) => {
+const ProfileDropdown = ({ profile, portfolio, currentPrice }: ProfileDropdownProps) => {
   const navigate = useNavigate();
   const authUser = getCurrentUser();
   const totalValue = portfolio.usdtBalance + portfolio.btcBalance * currentPrice;
@@ -49,7 +48,7 @@ const ProfileDropdown = ({ profile, portfolio, currentPrice, onProfileUpdate, on
       <DropdownMenuContent align="end" className="w-56 glass-panel">
         <div className="px-3 py-2.5">
           <div className="text-sm font-semibold text-foreground">{profile.displayName}</div>
-          <div className="text-xs text-muted-foreground mt-0.5">Paper Trading Account</div>
+          <div className="text-xs text-muted-foreground mt-0.5">Trading Account</div>
           <div className="flex items-center gap-2 mt-2">
             <div className="text-sm font-mono font-bold text-foreground">{formatUSD(totalValue)}</div>
             <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${pnl >= 0 ? 'bg-trading-green/10 text-trading-green' : 'bg-trading-red/10 text-trading-red'}`}>
@@ -61,47 +60,34 @@ const ProfileDropdown = ({ profile, portfolio, currentPrice, onProfileUpdate, on
         <DropdownMenuSeparator />
 
         <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer">
-          <User className="w-4 h-4 mr-2" />
-          View Profile
+          <User className="w-4 h-4 mr-2" /> View Profile
         </DropdownMenuItem>
-
         <DropdownMenuItem onClick={() => navigate('/wallet')} className="cursor-pointer">
-          <Wallet className="w-4 h-4 mr-2" />
-          Wallet
+          <Wallet className="w-4 h-4 mr-2" /> Wallet
         </DropdownMenuItem>
-
         <DropdownMenuItem onClick={() => navigate('/markets')} className="cursor-pointer">
-          <BarChart3 className="w-4 h-4 mr-2" />
-          Markets
+          <BarChart3 className="w-4 h-4 mr-2" /> Markets
         </DropdownMenuItem>
-
         <DropdownMenuItem onClick={() => navigate('/binary')} className="cursor-pointer">
-          <ArrowLeftRight className="w-4 h-4 mr-2" />
-          Binary Trading
+          <ArrowLeftRight className="w-4 h-4 mr-2" /> Binary Trading
         </DropdownMenuItem>
-
-        <DropdownMenuItem onClick={() => navigate('/neft')} className="cursor-pointer">
-          <Building2 className="w-4 h-4 mr-2" />
-          NEFT Transfer
+        <DropdownMenuItem onClick={() => navigate('/nft')} className="cursor-pointer">
+          <Gem className="w-4 h-4 mr-2" /> NFT Tokens
         </DropdownMenuItem>
-
         <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer">
-          <Settings className="w-4 h-4 mr-2" />
-          Settings
+          <Settings className="w-4 h-4 mr-2" /> Settings
         </DropdownMenuItem>
 
         {authUser?.role === 'admin' && (
           <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer">
-            <ShieldCheck className="w-4 h-4 mr-2" />
-            Admin Panel
+            <ShieldCheck className="w-4 h-4 mr-2" /> Admin Panel
           </DropdownMenuItem>
         )}
 
         <DropdownMenuSeparator />
 
         <DropdownMenuItem onClick={() => { logout(); navigate('/login'); }} className="cursor-pointer text-destructive focus:text-destructive">
-          <LogOut className="w-4 h-4 mr-2" />
-          Logout
+          <LogOut className="w-4 h-4 mr-2" /> Logout
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

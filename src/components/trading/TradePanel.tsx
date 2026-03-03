@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Portfolio, executeTrade, formatNumber, formatUSD, formatBTC } from '@/lib/trading';
+import { calculateTradingFee } from '@/lib/transactions';
 import { toast } from 'sonner';
 
 interface TradePanelProps {
@@ -20,6 +21,8 @@ const TradePanel = ({ portfolio, currentPrice, onTradeExecuted }: TradePanelProp
   const effectivePrice = orderType === 'market' ? currentPrice : parseFloat(price) || 0;
   const amountNum = parseFloat(amount) || 0;
   const total = effectivePrice * amountNum;
+  const isMaker = orderType === 'limit';
+  const { fee: tradingFee, feePercent } = calculateTradingFee('BTC', total, isMaker);
 
   const maxBuy = effectivePrice > 0 ? portfolio.usdtBalance / effectivePrice : 0;
   const maxSell = portfolio.btcBalance;
@@ -39,8 +42,8 @@ const TradePanel = ({ portfolio, currentPrice, onTradeExecuted }: TradePanelProp
       setAmount('');
       setPrice('');
       toast.success(
-        `${side === 'buy' ? 'Sent' : 'Received'} ${formatBTC(amountNum)} BTC @ ${formatUSD(effectivePrice)}`,
-        { description: `Total: ${formatUSD(total)}` }
+        `${side === 'buy' ? 'Bought' : 'Sold'} ${formatBTC(amountNum)} BTC @ ${formatUSD(effectivePrice)}`,
+        { description: `Total: ${formatUSD(total)} • Fee: ${formatUSD(tradingFee)} (${feePercent.toFixed(2)}%)` }
       );
     } catch (e: any) {
       toast.error(e.message);
@@ -61,7 +64,7 @@ const TradePanel = ({ portfolio, currentPrice, onTradeExecuted }: TradePanelProp
             side === 'buy' ? 'bg-trading-green text-primary-foreground glow-green' : 'bg-secondary text-muted-foreground hover:bg-accent'
           }`}
         >
-          Send
+          Buy
         </button>
         <button
           onClick={() => setSide('sell')}
@@ -69,7 +72,7 @@ const TradePanel = ({ portfolio, currentPrice, onTradeExecuted }: TradePanelProp
             side === 'sell' ? 'bg-trading-red text-primary-foreground glow-red' : 'bg-secondary text-muted-foreground hover:bg-accent'
           }`}
         >
-          Receive
+          Sell
         </button>
       </div>
 
@@ -152,10 +155,16 @@ const TradePanel = ({ portfolio, currentPrice, onTradeExecuted }: TradePanelProp
           ))}
         </div>
 
-        {/* Total */}
-        <div className="flex justify-between text-xs pt-2 border-t border-border/30">
-          <span className="text-muted-foreground">Total</span>
-          <span className="font-mono text-foreground font-medium">{formatUSD(total)}</span>
+        {/* Fee & Total */}
+        <div className="space-y-1 pt-2 border-t border-border/30">
+          <div className="flex justify-between text-xs">
+            <span className="text-muted-foreground">Fee ({feePercent.toFixed(2)}%)</span>
+            <span className="font-mono text-muted-foreground">{formatUSD(tradingFee)}</span>
+          </div>
+          <div className="flex justify-between text-xs">
+            <span className="text-muted-foreground">Total</span>
+            <span className="font-mono text-foreground font-medium">{formatUSD(total)}</span>
+          </div>
         </div>
 
         {/* Submit */}
@@ -165,7 +174,7 @@ const TradePanel = ({ portfolio, currentPrice, onTradeExecuted }: TradePanelProp
             side === 'buy' ? 'bg-trading-green hover:bg-trading-green/90 glow-green' : 'bg-trading-red hover:bg-trading-red/90 glow-red'
           } text-primary-foreground`}
         >
-          {side === 'buy' ? 'Send' : 'Receive'} BTC
+          {side === 'buy' ? 'Buy' : 'Sell'} BTC
         </Button>
       </div>
     </div>
