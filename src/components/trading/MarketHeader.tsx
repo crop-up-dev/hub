@@ -2,9 +2,11 @@ import { useBinanceTicker, SUPPORTED_ASSETS } from '@/hooks/useBinanceData';
 import { formatNumber, formatUSD } from '@/lib/trading';
 import { UserProfile } from '@/lib/profile';
 import { Portfolio } from '@/lib/trading';
-import { TrendingUp, TrendingDown, Activity, ChevronDown } from 'lucide-react';
+import { TrendingUp, TrendingDown, Activity, ChevronDown, DollarSign } from 'lucide-react';
 import ProfileDropdown from './ProfileDropdown';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 interface MarketHeaderProps {
   profile: UserProfile;
@@ -16,6 +18,7 @@ interface MarketHeaderProps {
 }
 
 const MarketHeader = ({ profile, portfolio, onProfileUpdate, onResetAccount, selectedSymbol, onSymbolChange }: MarketHeaderProps) => {
+  const navigate = useNavigate();
   const { ticker, prevPrice } = useBinanceTicker(selectedSymbol);
   const isUp = ticker.priceChangePercent >= 0;
   const priceDirection = ticker.price > prevPrice ? 'up' : ticker.price < prevPrice ? 'down' : 'same';
@@ -89,14 +92,24 @@ const MarketHeader = ({ profile, portfolio, onProfileUpdate, onResetAccount, sel
         </div>
       </div>
 
-      {/* Right: Profile */}
-      <ProfileDropdown
-        profile={profile}
-        portfolio={portfolio}
-        currentPrice={ticker.price}
-        onProfileUpdate={onProfileUpdate}
-        onResetAccount={onResetAccount}
-      />
+      {/* Right: Deposit + Profile */}
+      <div className="flex items-center gap-2">
+        <Button
+          onClick={() => navigate('/payments')}
+          size="sm"
+          className="bg-trading-green hover:bg-trading-green/90 text-primary-foreground gap-1.5 h-8 text-xs font-semibold"
+        >
+          <DollarSign className="w-3.5 h-3.5" />
+          Deposit
+        </Button>
+        <ProfileDropdown
+          profile={profile}
+          portfolio={portfolio}
+          currentPrice={ticker.price}
+          onProfileUpdate={onProfileUpdate}
+          onResetAccount={onResetAccount}
+        />
+      </div>
     </header>
   );
 };

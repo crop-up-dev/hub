@@ -1,7 +1,7 @@
 import { UserProfile, getInitials, getAvatarColor } from '@/lib/profile';
 import { Portfolio, formatUSD } from '@/lib/trading';
 import { getCurrentUser, logout } from '@/lib/auth';
-import { User, Settings, LogOut, ChevronDown, Wallet, ShieldCheck, BarChart3, ArrowLeftRight, Gem } from 'lucide-react';
+import { User, Settings, LogOut, ChevronDown, Wallet, ShieldCheck, ArrowLeftRight, CreditCard, FileText, FileBarChart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
@@ -65,14 +65,17 @@ const ProfileDropdown = ({ profile, portfolio, currentPrice }: ProfileDropdownPr
         <DropdownMenuItem onClick={() => navigate('/wallet')} className="cursor-pointer">
           <Wallet className="w-4 h-4 mr-2" /> Wallet
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => navigate('/markets')} className="cursor-pointer">
-          <BarChart3 className="w-4 h-4 mr-2" /> Markets
-        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate('/binary')} className="cursor-pointer">
           <ArrowLeftRight className="w-4 h-4 mr-2" /> Binary Trading
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => navigate('/nft')} className="cursor-pointer">
-          <Gem className="w-4 h-4 mr-2" /> NFT Tokens
+        <DropdownMenuItem onClick={() => navigate('/payments')} className="cursor-pointer">
+          <CreditCard className="w-4 h-4 mr-2" /> Payments
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate('/documents')} className="cursor-pointer">
+          <FileText className="w-4 h-4 mr-2" /> Documents
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate('/statements')} className="cursor-pointer">
+          <FileBarChart className="w-4 h-4 mr-2" /> Statement
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer">
           <Settings className="w-4 h-4 mr-2" /> Settings
