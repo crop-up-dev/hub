@@ -8,7 +8,7 @@ import OrderBook from '@/components/trading/OrderBook';
 import TradePanel from '@/components/trading/TradePanel';
 import TradeHistory from '@/components/trading/TradeHistory';
 import PortfolioSummary from '@/components/trading/PortfolioSummary';
-import RecentTrades from '@/components/trading/RecentTrades';
+import AssetListSidebar from '@/components/trading/AssetListSidebar';
 import { toast } from 'sonner';
 
 const Index = () => {
@@ -40,9 +40,17 @@ const Index = () => {
         onSymbolChange={setSelectedSymbol}
       />
 
-      {/* Main trading grid */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_280px_280px] gap-[1px] bg-border/50 overflow-hidden">
-        {/* Left column: Chart + Trade History + Order Book */}
+      {/* Main trading grid: Asset sidebar | Chart+History+OrderBook | TradePanel+Portfolio */}
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-[220px_1fr_280px] gap-[1px] bg-border/50 overflow-hidden">
+        {/* Left column: Asset list sidebar */}
+        <div className="hidden lg:flex flex-col bg-card min-h-0 max-h-[calc(100vh-52px)] overflow-hidden">
+          <AssetListSidebar
+            selectedSymbol={selectedSymbol}
+            onSymbolChange={setSelectedSymbol}
+          />
+        </div>
+
+        {/* Middle column: Chart + Trade History + Order Book */}
         <div className="flex flex-col gap-[1px] bg-border/50">
           <div className="bg-card h-[480px]">
             <PriceChart symbol={selectedSymbol} />
@@ -52,13 +60,6 @@ const Index = () => {
           </div>
           <div className="bg-card flex-1 min-h-[240px]">
             <OrderBook symbol={selectedSymbol} />
-          </div>
-        </div>
-
-        {/* Middle column: Market Trades (full height) */}
-        <div className="flex flex-col gap-[1px] bg-border/50">
-          <div className="bg-card flex-1 min-h-0">
-            <RecentTrades symbol={selectedSymbol} />
           </div>
         </div>
 

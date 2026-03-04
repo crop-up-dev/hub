@@ -12,6 +12,9 @@ import NFTTokens from "./pages/NFTTokens";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Admin from "./pages/Admin";
+import Payments from "./pages/Payments";
+import Documents from "./pages/Documents";
+import Statements from "./pages/Statements";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -32,6 +35,9 @@ const App = () => (
           <Route path="/markets" element={<ProtectedRoute><Markets /></ProtectedRoute>} />
           <Route path="/binary" element={<ProtectedRoute><BinaryTrading /></ProtectedRoute>} />
           <Route path="/nft" element={<ProtectedRoute><NFTTokens /></ProtectedRoute>} />
+          <Route path="/payments" element={<ProtectedRoute><Payments /></ProtectedRoute>} />
+          <Route path="/documents" element={<ProtectedRoute><Documents /></ProtectedRoute>} />
+          <Route path="/statements" element={<ProtectedRoute><Statements /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute adminOnly><Admin /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
