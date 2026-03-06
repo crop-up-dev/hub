@@ -143,7 +143,7 @@ const Payments = () => {
                   <svg width="32" height="20" viewBox="0 0 32 20" fill="none"><rect width="32" height="20" rx="3" fill="#1A1F71"/><text x="4" y="14" fontSize="9" fontWeight="bold" fill="white">VISA</text></svg>
                   <svg width="32" height="20" viewBox="0 0 32 20" fill="none"><rect width="32" height="20" rx="3" fill="#252525"/><circle cx="12" cy="10" r="6" fill="#EB001B"/><circle cx="20" cy="10" r="6" fill="#F79E1B"/><path d="M16 5.4A6 6 0 0 1 18 10a6 6 0 0 1-2 4.6A6 6 0 0 1 14 10a6 6 0 0 1 2-4.6z" fill="#FF5F00"/></svg>
                 </div>
-                <span className="text-xs font-medium text-foreground">Credit/Debit Cards</span>
+                <span className="text-xs font-medium text-foreground">Credit/Debit Card</span>
                 <span className="text-[10px] text-muted-foreground">Any Credit Or Debit Card</span>
               </button>
               <button
@@ -168,7 +168,7 @@ const Payments = () => {
               {/* Left: Amount */}
               <div className="space-y-4">
                 <h3 className="text-sm font-semibold text-foreground">
-                  {depositMethod === 'card' ? 'Secure deposit using Credit/Debit Card & Wallets' : 'Deposit via crypto wallet'}
+                  {depositMethod === 'card' ? 'Secure deposit using Credit/Debit Card' : 'Deposit via crypto wallet'}
                 </h3>
                 <div>
                   <label className="text-xs text-muted-foreground mb-1.5 block">Amount</label>

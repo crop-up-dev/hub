@@ -40,9 +40,9 @@ const Index = () => {
       />
 
       {/* Main trading grid */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-[280px_1fr_260px] gap-[1px] bg-border/50 overflow-hidden" style={{ minHeight: 'calc(100vh - 52px)' }}>
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-[320px_1fr_240px] gap-0 overflow-hidden" style={{ height: 'calc(100vh - 52px)' }}>
         {/* Left column: Asset list sidebar */}
-        <div className="hidden lg:flex flex-col bg-card min-h-0 overflow-hidden" style={{ maxHeight: 'calc(100vh - 52px)' }}>
+        <div className="hidden lg:flex flex-col bg-card border-r border-border/40 min-h-0 overflow-hidden">
           <AssetListSidebar
             selectedSymbol={selectedSymbol}
             onSymbolChange={setSelectedSymbol}
@@ -50,20 +50,20 @@ const Index = () => {
         </div>
 
         {/* Middle column: Chart + Trade History + Order Book */}
-        <div className="flex flex-col gap-[1px] bg-border/50" style={{ maxHeight: 'calc(100vh - 52px)', overflowY: 'auto' }}>
-          <div className="bg-card" style={{ height: '420px', minHeight: '320px' }}>
+        <div className="flex flex-col min-h-0 overflow-hidden">
+          <div className="bg-card" style={{ height: '360px', minHeight: '280px' }}>
             <PriceChart symbol={selectedSymbol} />
           </div>
-          <div className="bg-card" style={{ height: '150px' }}>
+          <div className="bg-card border-t border-border/40" style={{ height: '140px' }}>
             <TradeHistory trades={portfolio.trades} />
           </div>
-          <div className="bg-card flex-1" style={{ minHeight: '200px' }}>
+          <div className="bg-card border-t border-border/40 flex-1 min-h-0 overflow-hidden">
             <OrderBook symbol={selectedSymbol} />
           </div>
         </div>
 
         {/* Right column: Trade Panel only */}
-        <div className="flex flex-col gap-[1px] bg-border/50" style={{ maxHeight: 'calc(100vh - 52px)', overflowY: 'auto' }}>
+        <div className="flex flex-col border-l border-border/40 min-h-0 overflow-auto">
           <div className="bg-card flex-1">
             <TradePanel
               portfolio={portfolio}
