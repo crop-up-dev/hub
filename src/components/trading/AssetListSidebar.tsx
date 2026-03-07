@@ -41,8 +41,7 @@ const AssetRow = ({ asset, isSelected, onSelect }: { asset: AssetDefinition; isS
 };
 
 const categories = [
-  { key: 'currencies' as const, label: 'Currencies', assets: CRYPTO_ASSETS },
-  { key: 'crypto' as const, label: 'Cryptocurrencies', assets: [...CRYPTO_ASSETS, ...NFT_ASSETS] },
+  { key: 'crypto' as const, label: 'Crypto', assets: CRYPTO_ASSETS },
   { key: 'commodities' as const, label: 'Commodities', assets: COMMODITY_ASSETS },
   { key: 'forex' as const, label: 'Forex', assets: FOREX_ASSETS },
   { key: 'stocks' as const, label: 'Stocks', assets: STOCK_ASSETS },

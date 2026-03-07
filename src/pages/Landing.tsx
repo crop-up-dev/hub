@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useBinanceTicker, SUPPORTED_ASSETS } from '@/hooks/useBinanceData';
 import { formatNumber } from '@/lib/trading';
-import { TrendingUp, TrendingDown, Shield, Zap, BarChart3, Globe, ArrowRight } from 'lucide-react';
+import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getCurrentUser } from '@/lib/auth';
 import { useNavigate } from 'react-router-dom';
@@ -108,25 +108,6 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="border-t border-border/50 bg-card/30">
-        <div className="max-w-6xl mx-auto px-6 py-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { icon: BarChart3, title: 'Advanced Charts', desc: 'Professional-grade candlestick charts with real-time data' },
-              { icon: Zap, title: 'Instant Execution', desc: 'Lightning-fast market and limit order execution' },
-              { icon: Shield, title: 'Secure Trading', desc: 'Admin-managed transactions with full audit trail' },
-              { icon: Globe, title: 'Multi-Asset', desc: 'Crypto, Forex, Commodities, Stocks & NFT Tokens' },
-            ].map(f => (
-              <div key={f.title} className="p-5 rounded-xl border border-border/50 bg-card hover:border-primary/30 transition-all">
-                <f.icon className="w-8 h-8 text-primary mb-3" />
-                <h3 className="font-semibold text-foreground mb-1">{f.title}</h3>
-                <p className="text-muted-foreground text-sm">{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="border-t border-border/50 py-8 text-center">
